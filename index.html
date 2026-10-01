@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="page-version" content="3">
+<meta name="page-version" content="4">
 <title>LOOME Night Ops</title>
 <meta name="description" content="Sun, twilight and moonlight for any place in the world.">
 <meta name="theme-color" content="#0b0e14">
@@ -1302,7 +1302,7 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const app = { stack:['main'], depth:0, rewind:false, edit:false, q:'', sq:'', zq:'', res:[], hereMsg:'', locating:false, map:null, cal:null, lastDate:null, mainScroll:null,
   flashDash:false, drag:null, swipe:null, swiped:false, ev:null, outAnchor:null, pendingAnchor:null, pan:null, pinch:null, pointers:new Map(), raf:0, lastW:0,
-  lastTouch:0, installEvt:null, offline:'unknown', storageOk:true, zoneFor:'ptz',
+  lastTouch:0, hiddenAt:0, installEvt:null, offline:'unknown', storageOk:true, zoneFor:'ptz',
   set:{ civil:true, naut:false, astro:false, def:'last', sec:{ dash:true, nights:false, cal:false } },   // civil defaults to on; sec: only the Dashboard is open on a fresh install
   saved:[] };
 
@@ -1375,28 +1375,35 @@ function onGeoReady(){   // the place data has arrived: refresh whatever is wait
   else if(screen() === 'map') drawMap();
 }
 
-async function locate(silent){
+const distKm = (a, b, c, d) => { const r = Math.PI / 180, dl = (c - a) * r, dn = (d - b) * r, x = Math.sin(dl / 2) ** 2 + Math.cos(a * r) * Math.cos(c * r) * Math.sin(dn / 2) ** 2; return 12742 * Math.asin(Math.sqrt(x)); };
+async function locate(silent, stay){   // silent: no messages; stay: update the place but leave the screen you are on
   if(!navigator.geolocation){ if(!silent){ app.hereMsg = 'This browser has no location service. Enter a place instead.'; renderApp(); } return; }
   if(!silent){ app.locating = true; app.hereMsg = ''; renderApp(); }
   navigator.geolocation.getCurrentPosition(async p => {
     await geoReady;
     const la = +p.coords.latitude.toFixed(4), lo = +p.coords.longitude.toFixed(4);
+    if(silent && st.loc && distKm(st.loc.lat, st.loc.lon, la, lo) < 2){ return; }   // still where you were: leave your chosen day and time alone
     const n = GEO.ready ? nameFor(la, lo) : { name:`${Math.abs(la).toFixed(2)}°${la>=0?'N':'S'} ${Math.abs(lo).toFixed(2)}°${lo>=0?'E':'W'}`, short:'Here', tz:DEVICE_TZ, meta:'' };
     const tz = DEVICE_TZ && DEVICE_TZ !== 'UTC' ? DEVICE_TZ : n.tz;   // the device's own zone is the best guide to where you are
     app.locating = false; app.hereMsg = '';
     setLoc({ name:n.name, short:n.short, lat:la, lon:lo, tz, meta:n.meta });
-    app.stack = ['main']; toMain();
+    if(stay) renderApp(); else { app.stack = ['main']; toMain(); }
   }, err => {
     app.locating = false;
     if(silent) return;
     app.hereMsg = err && err.code === 1 ? 'Location access is blocked. Allow it in your browser settings, or enter a place.' : 'Could not get your position. Enter a place instead.';
     renderApp();
-  }, { timeout:15000, maximumAge:600000 });
+  }, { timeout:15000, maximumAge: silent ? 0 : 60000 });   // the automatic checks ask for a fresh reading, not a remembered one
 }
-async function maybeLocateOnOpen(){   // "Current position" as the default place: only when the browser has already been allowed
+async function maybeLocateOnOpen(stay){   // "Current position" as the default place: only when the browser has already been allowed
   if(app.set.def !== 'current' || !st.loc) return;
   try{ const p = await navigator.permissions.query({ name:'geolocation' }); if(p.state !== 'granted') return; }catch(e){ return; }
-  locate(true);
+  locate(true, stay);
+}
+function resumeCheck(){   // coming back to the app after a while: has the phone moved?
+  if(app.set.def !== 'current' || !st.loc || !app.hiddenAt) return;
+  if(Date.now() - app.hiddenAt < 5 * 60 * 1000) return;   // a quick app switch is not a journey
+  app.hiddenAt = 0; maybeLocateOnOpen(true);
 }
 function startList(){
   if(!app.sq.trim()) return '';
@@ -1599,7 +1606,7 @@ function scrZone(){
 function scrDefLoc(){
   const row = (k, label) => `<button class="a-row" data-act="setdef" data-v="${esc(k)}"><span>${esc(label)}</span><span class="a-val a-sel">${app.set.def === k ? '✓' : ''}</span></button>`;
   return bar('Default location', 'Settings') + `<div class="a-lede" style="padding-top:6px">The place the app opens with.</div><div class="a-grp">${row('last', 'Last used place')}${row('current', 'Current position')}${app.saved.map(s => row(s.name, s.name)).join('')}</div>
-    <p class="a-foot">"Current position" asks your browser for the device location when the app opens, if it has already been allowed.</p>`;
+    <p class="a-foot">"Current position" asks your browser for the device location when the app opens, and again when you come back to it after a few minutes away, if it has already been allowed.</p>`;
 }
 
 const SCREENS = { start:scrStart, main:scrMain, locs:scrLocs, map:scrMap, settings:scrSettings, zone:scrZone, defloc:scrDefLoc };
@@ -1937,7 +1944,13 @@ function init(){
   setTimeout(async () => { await loadGeo(); await loadOutlines(); maybeLocateOnOpen(); }, 30);
   initPWA();
   setInterval(() => { if(!document.hidden && st.loc && st.live && screen() === 'main' && !app.drag && Date.now() - app.lastTouch > 4000) renderApp(); }, 30000);   // the minute-by-minute refresh waits while you are touching the screen
-  document.addEventListener('visibilitychange', () => { if(!document.hidden && st.loc && st.live && screen() === 'main') renderApp(); });
+  document.addEventListener('visibilitychange', () => {
+    if(document.hidden){ app.hiddenAt = Date.now(); return; }
+    if(st.loc && st.live && screen() === 'main') renderApp();
+    resumeCheck();
+  });
+  window.addEventListener('pagehide', () => { app.hiddenAt = app.hiddenAt || Date.now(); });
+  window.addEventListener('pageshow', e => { if(e.persisted) resumeCheck(); });
   let rz; window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => {
     if(screen() === 'map') drawMap();
     else if(screen() === 'main' && $('app').clientWidth !== app.lastW) renderApp(); }, 150); });
@@ -1946,6 +1959,6 @@ function init(){
 
 init();
 </script>
-<div class="pagever" title="Page version 3">v3</div>
+<div class="pagever" title="Page version 4">v4</div>
 </body>
 </html>
