@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="page-version" content="1">
+<meta name="page-version" content="2">
 <title>LOOME Night Ops</title>
 <meta name="description" content="Sun, twilight and moonlight for any place in the world.">
 <meta name="theme-color" content="#0b0e14">
@@ -213,6 +213,8 @@ button{ font-family:var(--mono); }
 .a-or{ text-align:center; color:var(--faint); font-size:11px; letter-spacing:.16em; }
 .a-small{ color:var(--faint); font-size:11px; line-height:1.55; margin:6px 0 0; }
 .a-start .a-search input{ border-radius:12px; padding:14px 14px; background:var(--surface); }
+/* iOS Safari zooms the whole page into any text field below 16px when it is tapped, so no field may be smaller */
+input, select, textarea, .a-search input{ font-size:16px !important; }
 
 </style>
 <style id="pagever-css">.pagever{font:10px/1 "IBM Plex Mono",ui-monospace,Menlo,monospace;letter-spacing:.08em;color:#566074;opacity:.8;text-align:center;padding:18px 0 max(18px,env(safe-area-inset-bottom));user-select:none}</style>
@@ -1404,7 +1406,7 @@ function scrStart(){
     <button class="a-big" data-act="locate"${app.locating ? ' disabled' : ''}>${app.locating ? 'Finding your position…' : '➤&nbsp; Use my location'}</button>
     ${app.hereMsg ? `<div class="a-msg" style="padding:2px 0">${esc(app.hereMsg)}</div>` : ''}
     <div class="a-or">OR</div>
-    <div class="a-search" style="padding:0"><input id="sq" data-keep="1" type="search" enterkeyhint="search" placeholder="Enter a town or airport (ICAO code)" value="${esc(app.sq)}" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Enter a place"></div>
+    <div class="a-search" style="padding:0"><input id="sq" data-keep="1" type="search" enterkeyhint="search" placeholder="Town, place or ICAO code" value="${esc(app.sq)}" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Enter a place"></div>
     <div id="slist">${startList()}</div>
     <p class="a-small">Your location stays on this device. It is only used to work out the sun and moon where you are.</p></div>`;
 }
@@ -1932,6 +1934,6 @@ function init(){
 
 init();
 </script>
-<div class="pagever" title="Page version 1">v1</div>
+<div class="pagever" title="Page version 2">v2</div>
 </body>
 </html>
