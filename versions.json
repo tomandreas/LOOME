@@ -1,0 +1,383 @@
+{
+ "files": {
+  "ferry.html": {
+   "current": 6,
+   "versions": [
+    {
+     "v": 1,
+     "file": "ferry.v1.html",
+     "archived": "2026-09-30",
+     "note": "Original from the GitHub repo, before any changes in this conversation.",
+     "bytes": 201463,
+     "sha": "c1c1cad3c4721c038e33031956bbcd03173c7c3b2de577d77a234e30672f566a"
+    },
+    {
+     "v": 2,
+     "file": "ferry.v2.html",
+     "archived": "2026-09-30",
+     "note": "iPhone fixes: 16 px fields so Safari does not zoom, no sideways scrolling, route cards fit.",
+     "bytes": 201979,
+     "sha": "8431c4ee4872b1be0aa1c1d4d5130ff4e4ffed6e2a5705e48fcf9e44aff2a2a8"
+    },
+    {
+     "v": 3,
+     "file": "ferry.v3.html",
+     "archived": "2026-09-30",
+     "note": "Route-wind bug sweep (wind applied on Calculate, wind triangle, TAS followed, stale-results note). This is the 'ferry backup': fewest moving parts.",
+     "bytes": 205233,
+     "sha": "83876aa3f6a44d942051864ba7a43c147c2d97ebc0aad86a31e3b8dde77d981c"
+    },
+    {
+     "v": 4,
+     "file": "ferry.v4.html",
+     "archived": "2026-09-30",
+     "note": "Adds planning date, Local/UTC switch, ATS and fuel opening hours and automated NOTAM checks (FAA source, blocked from GitHub).",
+     "bytes": 240927,
+     "sha": "c64b8ee352cc6ced5ab75079114d7f4543b6db6fd974be7a7935a857e1b6ba1a"
+    },
+    {
+     "v": 5,
+     "file": "ferry.v5.html",
+     "archived": "2026-09-30",
+     "note": "Manual NOTAM check with a copy-route button for IPPC; opening-hours check date and stale warning.",
+     "bytes": 239871,
+     "sha": "7fbc5561f66798a76e3e068f4bce4ceb4dd0e60f3dc771a0c8c2802bfad38070"
+    },
+    {
+     "v": 6,
+     "file": "ferry.v6.html",
+     "archived": "2026-09-30",
+     "note": "Discreet version label added; no other changes.",
+     "bytes": 240196,
+     "sha": "e6cbd252c5fa38e0bf2db67daa24abd705a2a766afccaecab6f54981ec863a28",
+     "body_sha": "7fbc5561f66798a76e3e068f4bce4ceb4dd0e60f3dc771a0c8c2802bfad38070"
+    }
+   ]
+  },
+  "sun-moon.html": {
+   "current": 5,
+   "versions": [
+    {
+     "v": 1,
+     "file": "sun-moon.v1.html",
+     "archived": "2026-09-30",
+     "note": "Earliest kept: three tabs (dashboard, next 14 nights, moon calendar), Local/UTC, iPhone no-zoom fix. Earlier iterations were not kept.",
+     "bytes": 249331,
+     "sha": "f63a95942d5273746287ddfe9d2686654ff57538416026499fd43a5c0fab7cfe"
+    },
+    {
+     "v": 2,
+     "file": "sun-moon.v2.html",
+     "archived": "2026-09-30",
+     "note": "Adds green/amber/red mlx colours and the moon-distance fix.",
+     "bytes": 249931,
+     "sha": "572f1608586d3150cba76e28e0cc237664d3dabd5837497ac18ba6da9349df28"
+    },
+    {
+     "v": 3,
+     "file": "sun-moon.v3.html",
+     "archived": "2026-09-30",
+     "note": "Night rows labelled by the whole night, tap opens at the brightest moment, list keeps its start.",
+     "bytes": 251246,
+     "sha": "b7c297c6dc14e076124b997343e7395b75405226b34afda89809b39efd480e39"
+    },
+    {
+     "v": 4,
+     "file": "sun-moon.v4.html",
+     "archived": "2026-09-30",
+     "note": "Graph in the app's 402 × 140 proportions on phones (capped at 170 px tall on wide screens); the page shows its own version number in the footer.",
+     "bytes": 251396,
+     "sha": "bec57a4247d9f8edcd2881a4d2a80f877b56925275db97860ccbf97bfdfa5cc0"
+    },
+    {
+     "v": 5,
+     "file": "sun-moon.v5.html",
+     "archived": "2026-09-30",
+     "note": "Version label made discreet (small 'v5' at the bottom instead of a footer sentence).",
+     "bytes": 251608,
+     "sha": "770b4c487f0d4817a4c8de276734e86c2ef2eadd2a1e85ec45cb344192a9bdac",
+     "body_sha": "a2d387cb3eeaded6d695d667ebcb1ba38b6d823f035b696787622a2204a98abf"
+    }
+   ]
+  },
+  "index.html": {
+   "current": 3,
+   "versions": [
+    {
+     "v": 1,
+     "file": "index.v1.html",
+     "archived": "2026-09-30",
+     "note": "Original from the GitHub repo.",
+     "bytes": 8385,
+     "sha": "d0309c62a74a0a55f634990e07312a13ce0a4c8a522066de9dee887606ba6a8a"
+    },
+    {
+     "v": 2,
+     "file": "index.v2.html",
+     "archived": "2026-09-30",
+     "note": "Adds the Sun & Moon card.",
+     "bytes": 8748,
+     "sha": "a1b6490538d2a402fef236a25b59af24e760b0c57e006339be10293466a2fc44"
+    },
+    {
+     "v": 3,
+     "file": "index.v3.html",
+     "archived": "2026-09-30",
+     "note": "Discreet version label added; no other changes.",
+     "bytes": 9073,
+     "sha": "d1574123739601907e6cbe93626a1b04b4895115f1e8285e254de842820758c7",
+     "body_sha": "a1b6490538d2a402fef236a25b59af24e760b0c57e006339be10293466a2fc44"
+    }
+   ]
+  },
+  "aw169-prototyp-A.html": {
+   "current": 3,
+   "versions": [
+    {
+     "v": 1,
+     "file": "aw169-prototyp-A.v1.html",
+     "archived": "2026-09-30",
+     "note": "Original from the GitHub repo, as fetched in this conversation.",
+     "bytes": 38266,
+     "sha": "2ac4e608e5170fa0b3db51cc5f5f2be80920bb03b194d8abf4cdd69f762adea5"
+    },
+    {
+     "v": 2,
+     "file": "aw169-prototyp-A.v2.html",
+     "archived": "2026-09-30",
+     "note": "iPhone no-zoom fix (16 px fields on touch screens).",
+     "bytes": 38538,
+     "sha": "ce4134c57cd3c2db379e4f038ba6fba89c6ed0cb29506a7a170dbf5fb9633967"
+    },
+    {
+     "v": 3,
+     "file": "aw169-prototyp-A.v3.html",
+     "archived": "2026-09-30",
+     "note": "Discreet version label added; no other changes.",
+     "bytes": 38863,
+     "sha": "d1c47f79d0bc01b19afbc396960886bf54a6557864b2328ac39ef6fdfaa8b386",
+     "body_sha": "ce4134c57cd3c2db379e4f038ba6fba89c6ed0cb29506a7a170dbf5fb9633967"
+    }
+   ]
+  },
+  "limitations.html": {
+   "current": 3,
+   "versions": [
+    {
+     "v": 1,
+     "file": "limitations.v1.html",
+     "archived": "2026-09-30",
+     "note": "Original from the GitHub repo, as fetched in this conversation.",
+     "bytes": 139391,
+     "sha": "2fbff9c4841acfe89db023b91c858a8f0e5db30f032484ee0811f3eaf095a3ac"
+    },
+    {
+     "v": 2,
+     "file": "limitations.v2.html",
+     "archived": "2026-09-30",
+     "note": "iPhone no-zoom fix (16 px fields on touch screens).",
+     "bytes": 139663,
+     "sha": "f701c93d816d442e6e0333e6f1f38764bee1f1cb76261afcad7046d2e58fb393"
+    },
+    {
+     "v": 3,
+     "file": "limitations.v3.html",
+     "archived": "2026-09-30",
+     "note": "Discreet version label added; no other changes.",
+     "bytes": 139988,
+     "sha": "dfff4744611d673789180fb951dc4f7ee8df544ad043a6a15f5e66b639960178",
+     "body_sha": "f701c93d816d442e6e0333e6f1f38764bee1f1cb76261afcad7046d2e58fb393"
+    }
+   ]
+  },
+  "operations.html": {
+   "current": 3,
+   "versions": [
+    {
+     "v": 1,
+     "file": "operations.v1.html",
+     "archived": "2026-09-30",
+     "note": "Original from the GitHub repo, as fetched in this conversation.",
+     "bytes": 62374,
+     "sha": "7f311c876bddac6ed265bd7544f3176908a1fe325fab923c2787e49f0355bdbc"
+    },
+    {
+     "v": 2,
+     "file": "operations.v2.html",
+     "archived": "2026-09-30",
+     "note": "iPhone no-zoom fix (16 px fields on touch screens).",
+     "bytes": 62646,
+     "sha": "2f8fc578bdd461415f76e374fcd5521c1904fc2fe4758f38f619efc9685db81e"
+    },
+    {
+     "v": 3,
+     "file": "operations.v3.html",
+     "archived": "2026-09-30",
+     "note": "Discreet version label added; no other changes.",
+     "bytes": 62971,
+     "sha": "0199f0457698d19c07158cf21ac91b2976a04fdbc3975c49820e30aabbc4f880",
+     "body_sha": "2f8fc578bdd461415f76e374fcd5521c1904fc2fe4758f38f619efc9685db81e"
+    }
+   ]
+  },
+  "performance.html": {
+   "current": 3,
+   "versions": [
+    {
+     "v": 1,
+     "file": "performance.v1.html",
+     "archived": "2026-09-30",
+     "note": "Original from the GitHub repo, as fetched in this conversation.",
+     "bytes": 35495,
+     "sha": "2fcdf399bcd75d111baf245e7388f2eea02044a4330866922cf329d15695d6b9"
+    },
+    {
+     "v": 2,
+     "file": "performance.v2.html",
+     "archived": "2026-09-30",
+     "note": "iPhone no-zoom fix (16 px fields on touch screens).",
+     "bytes": 35767,
+     "sha": "e4b6bb56dd635999f4f3bec5e289ca473bc1e2d9013087c0e9a095e91d173d63"
+    },
+    {
+     "v": 3,
+     "file": "performance.v3.html",
+     "archived": "2026-09-30",
+     "note": "Discreet version label added; no other changes.",
+     "bytes": 36092,
+     "sha": "04ab94e97410eb1fb371dfaabc9dd7a61b371102630c44ab34274cfb35562c90",
+     "body_sha": "e4b6bb56dd635999f4f3bec5e289ca473bc1e2d9013087c0e9a095e91d173d63"
+    }
+   ]
+  },
+  "sun-moon-prototype-1.html": {
+   "current": 1,
+   "versions": [
+    {
+     "v": 1,
+     "file": "sun-moon-prototype-1.v1.html",
+     "archived": "2026-09-30",
+     "note": "Only version kept: first widget test bench (sun path, moon, twilight times, Lock Screen, StandBy).",
+     "bytes": 223908,
+     "sha": "99aec08220ec0d32dcc1e499d0ef89a630cd4ad66c8515453ff92f81d2a6ce42"
+    }
+   ]
+  },
+  "sun-moon-prototype-2.html": {
+   "current": 1,
+   "versions": [
+    {
+     "v": 1,
+     "file": "sun-moon-prototype-2.v1.html",
+     "archived": "2026-09-30",
+     "note": "Latest state kept: place and ICAO search, nearest-town names, mlx moonlight, Daylight rule. Earlier iterations were not kept.",
+     "bytes": 3521804,
+     "sha": "64b1da473e8fb76f84274c0540b0627ee0fea90bc312f22c45402807fee687ca"
+    }
+   ]
+  },
+  "sun-moon-prototype-3.html": {
+   "current": 3,
+   "versions": [
+    {
+     "v": 1,
+     "file": "sun-moon-prototype-3.v1.html",
+     "archived": "2026-09-30",
+     "note": "Rebuilt from source: app layout, 14 nights, moon calendar, settings, exact iPhone sizes; before mlx colours and night labels.",
+     "bytes": 3565805,
+     "sha": "35857dbecf9008f28cc8e2a0841261755cc996c96ec9187502a3cca10c47ef8d"
+    },
+    {
+     "v": 2,
+     "file": "sun-moon-prototype-3.v2.html",
+     "archived": "2026-09-30",
+     "note": "Rebuilt from source: adds mlx colours, full-night labels and tap-to-peak.",
+     "bytes": 3567140,
+     "sha": "6c3926ba4ef3801289c8ff0e41d2b102829946b1edce399985814957ccfe652e"
+    },
+    {
+     "v": 3,
+     "file": "sun-moon-prototype-3.v3.html",
+     "archived": "2026-09-30",
+     "note": "Adds tonight's peak on the small moon widget in daytime; the outlook keeps its list.",
+     "bytes": 3568746,
+     "sha": "d03922ae2539f4467e60ec2d96e0dfbd3ca337b703a093d6cabf59ba024fd798"
+    }
+   ]
+  },
+  "sun-moon-prototype-4.html": {
+   "current": 4,
+   "versions": [
+    {
+     "v": 1,
+     "file": "sun-moon-prototype-4.v1.html",
+     "archived": "2026-09-30",
+     "note": "No population after selecting a town, civil twilight toggle, country outline, moon inside the graph range.",
+     "bytes": 3968943,
+     "sha": "4945651f5fbb5690c60d3bee68ca8eff2f470830e30ab19d781bb5f72e40106a"
+    },
+    {
+     "v": 2,
+     "file": "sun-moon-prototype-4.v2.html",
+     "archived": "2026-09-30",
+     "note": "Main-screen graph 402 × 140 pt (same proportions on other iPhone widths).",
+     "bytes": 3968969,
+     "sha": "8be52bb971bf7dc903d2a145071e7dded397a56a4462aeba9145f1362d98850d"
+    },
+    {
+     "v": 3,
+     "file": "sun-moon-prototype-4.v3.html",
+     "archived": "2026-09-30",
+     "note": "Shows its version in About and as a discreet label; no other changes.",
+     "bytes": 3969430,
+     "sha": "8cc0a4da9f28586b2ff7189105a1bd61d8620e615eb8c7b76f62467498757fa4",
+     "body_sha": "19d6f0dcdde651fcf0aacd2534839ec3cca952e8d407d6623cb51dec1ca21468"
+    },
+    {
+     "v": 4,
+     "file": "sun-moon-prototype-4.v4.html",
+     "archived": "2026-09-30",
+     "note": "Dashboard, Next 14 nights and Moon calendar are collapsible sections on one page that remember whether they are open; tapping a night or day updates the Dashboard quietly. Named iOS Prototype 4.",
+     "bytes": 3975851,
+     "sha": "c89a3fd74f7bcc4bdfcf8b8d820689a5fa2572a5c8a60b13e394f159fff53ad4",
+     "body_sha": "8dadca1940487f2fd5f69eb6ae2af567f5acbc510056b05b0de542f25d71ff6a"
+    }
+   ]
+  },
+  "sun-moon-graph-comparison.html": {
+   "current": 2,
+   "versions": [
+    {
+     "v": 1,
+     "file": "sun-moon-graph-comparison.v1.html",
+     "archived": "2026-09-30",
+     "note": "Graph variants with the web page on a phone as the reference. The first version used the desktop width and was not kept.",
+     "bytes": 25247,
+     "sha": "ac1381ef3fbf78b45b2223bcc053a8978cc35d8f7bc0269dec36d22b10d91359"
+    },
+    {
+     "v": 2,
+     "file": "sun-moon-graph-comparison.v2.html",
+     "archived": "2026-09-30",
+     "note": "Labels updated: the 140 pt variant is the one used in prototype 4.",
+     "bytes": 25299,
+     "sha": "27c8846a963f416de4b5c96070998bc7b4a23664e495b0c180f7a48785280c63"
+    }
+   ]
+  },
+  "loome-night-ops.html": {
+   "current": 1,
+   "versions": [
+    {
+     "v": 1,
+     "file": "loome-night-ops.v1.html",
+     "archived": "2026-09-30",
+     "note": "First release: global sun, twilight and moonlight page that mirrors iOS Prototype 4 (collapsible sections, global towns and airports, saved places, map with country outline, settings), installable and offline, bundled fonts and libraries.",
+     "bytes": 4171114,
+     "sha": "b48e047adb94ca33b9b0508f972f5419d6538bf3bed9dcec5b0789e80cd14c8f",
+     "body_sha": "260a0bd986360f80686f22ac614dcec814f432c8602b6b5465ad870be443b6fb"
+    }
+   ]
+  }
+ }
+}
