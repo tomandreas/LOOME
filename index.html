@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="page-version" content="6">
+<meta name="page-version" content="1.7">
 <title>LOOME Night Ops</title>
 <meta name="description" content="Sun, twilight and moonlight for any place in the world.">
 <meta name="theme-color" content="#0b0e14">
@@ -231,6 +231,13 @@ input, select, textarea, .a-search input{ font-size:16px !important; }
 h1.a-title, h1.a-brand{ margin:0; font-weight:400; }
 .a-foot, .a-small, .a-hint{ color:var(--dim); }
 .a-big.ghost{ background:transparent; color:var(--text); border:1px solid var(--line); }
+
+/* v1.7: the "This position" button under the header, shown only when a tap would help */
+.a-herewrap{ display:flex; justify-content:flex-end; padding:2px 18px 0; }
+.a-here{ display:inline-flex; align-items:center; gap:7px; height:28px; padding:0 12px; border-radius:14px; background:rgba(232,160,32,.08); border:1px solid rgba(232,160,32,.45); color:var(--amber); font-size:12px; font-weight:500; letter-spacing:.02em; cursor:pointer; white-space:nowrap; }
+.a-here:disabled{ opacity:.7; cursor:default; }
+.a-here.fail{ color:var(--bad); border-color:rgba(229,96,79,.5); background:rgba(229,96,79,.08); }
+.a-here svg{ flex-shrink:0; }
 
 </style>
 <style id="pagever-css">.pagever{font:10px/1 "IBM Plex Mono",ui-monospace,Menlo,monospace;letter-spacing:.08em;color:#566074;opacity:.8;text-align:center;padding:18px 0 max(18px,env(safe-area-inset-bottom));user-select:none}</style>
@@ -1300,7 +1307,7 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const app = { stack:['main'], depth:0, rewind:false, edit:false, q:'', sq:'', zq:'', res:[], hereMsg:'', locating:false, map:null, cal:null, lastDate:null, mainScroll:null,
   flashDash:false, drag:null, swipe:null, swiped:false, ev:null, outAnchor:null, pendingAnchor:null, pan:null, pinch:null, pointers:new Map(), raf:0, lastW:0,
-  lastTouch:0, hiddenAt:0, followStale:false, installEvt:null, offline:'unknown', storageOk:true, zoneFor:'ptz',
+  lastTouch:0, hiddenAt:0, lastTick:Date.now(), followStale:false, followDenied:false, retried:false, retryMs:20000, hereFail:'', hereT:0, installEvt:null, offline:'unknown', storageOk:true, zoneFor:'ptz',
   set:{ civil:true, naut:false, astro:false, def:'last', sec:{ dash:true, nights:false, cal:false } },   // civil defaults to on; sec: only the Dashboard is open on a fresh install
   saved:[] };
 
@@ -1390,36 +1397,49 @@ const distKm = (a, b, c, d) => { const r = Math.PI / 180, dl = (c - a) * r, dn =
 // The place is "following" when it came from Use my location (and the default is Last place used), or when the default is Current position.
 const shouldFollow = () => !!st.loc && (app.set.def === 'current' || (app.set.def === 'last' && st.loc.follow === true));
 const followMark = () => st.loc && st.loc.follow ? `<svg class="a-follow${app.followStale ? ' stale' : ''}" viewBox="0 0 24 24" width="16" height="16" role="img" aria-label="${app.followStale ? 'Last known position, not being updated' : 'Following your position'}"><path fill="currentColor" d="M21 3 3 10.5l7.5 2.5L13 21z"/></svg>` : '';
+const ARROW = '<svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path fill="currentColor" d="M21 3 3 10.5l7.5 2.5L13 21z"/></svg>';
+const showHere = () => !!st.loc && (app.locating || !!app.hereFail || !(st.loc.follow && !app.followStale));   // only when a tap would help
+const hereButton = () => !showHere() ? '' :
+  `<div class="a-herewrap"><button class="a-here${app.hereFail ? ' fail' : ''}" data-act="herebtn" aria-label="Use my current position"${app.locating ? ' disabled' : ''}>${ARROW}<span>${app.locating ? 'Finding…' : (app.hereFail || 'This position')}</span></button></div>`;
+function flashHere(msg){ app.hereFail = msg; clearTimeout(app.hereT); app.hereT = setTimeout(() => { app.hereFail = ''; if(curScreen() === 'main') renderApp(); }, 4000); }
 async function locate(silent, stay){   // silent: no messages; stay: update the place but leave the screen you are on
-  if(!navigator.geolocation){ if(!silent){ app.hereMsg = 'This browser has no location service. Enter a place instead.'; renderApp(); } return; }
-  if(!silent){ app.locating = true; app.hereMsg = ''; renderApp(); }
+  if(!navigator.geolocation){ if(!silent){ app.hereMsg = 'This browser has no location service. Enter a place instead.'; flashHere('No location service'); renderApp(); } return; }
+  if(!silent){ app.locating = true; app.hereMsg = ''; app.hereFail = ''; renderApp(); }
   navigator.geolocation.getCurrentPosition(async p => {
     await geoReady;
     const la = +p.coords.latitude.toFixed(4), lo = +p.coords.longitude.toFixed(4);
-    if(silent && st.loc && distKm(st.loc.lat, st.loc.lon, la, lo) < 2){ app.followStale = false; return; }   // still where you were: leave your chosen day and time alone
+    if(silent && st.loc && distKm(st.loc.lat, st.loc.lon, la, lo) < 2){ app.followStale = false; app.retried = false; return; }   // still where you were: leave your chosen day and time alone
     const n = GEO.ready ? nameFor(la, lo) : { name:`${Math.abs(la).toFixed(2)}°${la>=0?'N':'S'} ${Math.abs(lo).toFixed(2)}°${lo>=0?'E':'W'}`, short:'Here', tz:DEVICE_TZ, meta:'' };
     const tz = DEVICE_TZ && DEVICE_TZ !== 'UTC' ? DEVICE_TZ : n.tz;   // the device's own zone is the best guide to where you are
     app.locating = false; app.hereMsg = '';
-    app.followStale = false;
+    app.followStale = false; app.retried = false; app.hereFail = '';
     setLoc({ name:n.name, short:n.short, lat:la, lon:lo, tz, meta:n.meta, follow:true });   // from now on this place follows you
     if(stay) renderApp(); else { app.stack = ['main']; toMain(); }
   }, err => {
     app.locating = false;
-    if(silent){ app.followStale = true; if(curScreen() === 'main') renderApp(); return; }   // could not update: the arrow dims
+    if(silent){
+      app.followStale = true;   // could not update: the arrow dims
+      if(err && err.code === 1) app.followDenied = true;   // asked and refused: no more asking until the app is next opened
+      else if(!app.retried){ app.retried = true; setTimeout(() => maybeLocateOnOpen(true), app.retryMs); }   // weak fix: one more try shortly
+      if(curScreen() === 'main') renderApp(); return;
+    }
     app.hereMsg = err && err.code === 1 ? 'Location access is blocked. Allow it in your browser settings, or enter a place.' : 'Could not get your position. Enter a place instead.';
+    flashHere(err && err.code === 1 ? 'Location blocked' : 'No position found');
     renderApp();
-  }, { timeout:15000, maximumAge: silent ? 0 : 60000 });   // the automatic checks ask for a fresh reading, not a remembered one
+  }, { timeout:20000, maximumAge: silent ? 0 : 60000 });   // the automatic checks ask for a fresh reading, not a remembered one
 }
-async function maybeLocateOnOpen(stay){   // following: only when the browser has already been allowed to share the location
-  if(!shouldFollow()) return;
-  const stale = () => { app.followStale = true; if(curScreen() === 'main') renderApp(); };
-  try{ const p = await navigator.permissions.query({ name:'geolocation' }); if(p.state !== 'granted') return stale(); }catch(e){ return stale(); }
+async function maybeLocateOnOpen(stay){   // following: just ask for the position
+  if(!shouldFollow() || app.followDenied) return;
+  // The browser's permission report cannot be trusted on iPhone (it says "prompt" even when a position is available without asking),
+  // so only an explicit "denied" stops us here; otherwise we ask, and the answer decides.
+  try{ const p = await navigator.permissions.query({ name:'geolocation' }); if(p.state === 'denied'){ app.followDenied = true; app.followStale = true; if(curScreen() === 'main') renderApp(); return; } }catch(e){}
   locate(true, stay);
 }
-function resumeCheck(){   // coming back to the app after a while: has the phone moved?
-  if(!shouldFollow() || !app.hiddenAt) return;
-  if(Date.now() - app.hiddenAt < 5 * 60 * 1000) return;   // a quick app switch is not a journey
-  app.hiddenAt = 0; maybeLocateOnOpen(true);
+function resumeCheck(away){   // coming back to the app after a while: has the phone moved?
+  if(!shouldFollow()) return;
+  const gap = away != null ? away : (app.hiddenAt ? Date.now() - app.hiddenAt : 0);
+  if(gap < 5 * 60 * 1000) return;   // a quick app switch is not a journey
+  app.hiddenAt = 0; app.lastTick = Date.now(); app.retried = false; maybeLocateOnOpen(true);
 }
 function startList(){
   if(!app.sq.trim()) return '';
@@ -1478,7 +1498,7 @@ function scrMain(){
   app.ev = evOn(st.date);
   const sub = st.loc.meta || `${Math.abs(st.loc.lat).toFixed(2)}°${st.loc.lat>=0?'N':'S'} ${Math.abs(st.loc.lon).toFixed(2)}°${st.loc.lon>=0?'E':'W'}`;
   return `<h1 class="sr-only">LOOME Night Ops</h1><div class="a-nav"><button class="a-locbtn" data-act="locs"><span class="a-locname">${followMark()}${esc(st.loc.name)}</span><span class="a-chev">▾</span><span class="a-locsub">${esc(sub)}</span></button>
-      <button class="a-icon" data-act="settings" aria-label="Settings">${gear}</button></div>
+      <button class="a-icon" data-act="settings" aria-label="Settings">${gear}</button></div>${hereButton()}
     ${SECS.map(secHTML).join('')}<div style="height:24px"></div>`;
 }
 function dashBody(){
@@ -1900,6 +1920,7 @@ function initEvents(){
       case 'map': openMap(); navPush('map'); break;
       case 'locate': locate(false); break;
       case 'here': locate(false); break;
+      case 'herebtn': app.followDenied = false; locate(false, true); break;   // the button under the header
       case 'startpick': choose(app.res[i], true); break;
       case 'pick': choose(app.res[i], false); break;
       case 'choose': setLoc(app.saved[i]); toMain(); break;
@@ -1973,7 +1994,11 @@ function init(){
   // the big place data loads after the first screen is on the page
   setTimeout(async () => { await loadGeo(); await loadOutlines(); maybeLocateOnOpen(); }, 30);
   initPWA();
-  setInterval(() => { if(!document.hidden && st.loc && st.live && curScreen() === 'main' && !app.drag && Date.now() - app.lastTouch > 4000) renderApp(); }, 30000);   // the minute-by-minute refresh waits while you are touching the screen
+  setInterval(() => {
+    const now = Date.now(), gap = now - app.lastTick; app.lastTick = now;
+    if(gap > 5 * 60 * 1000) resumeCheck(gap);   // a suspended phone pauses its timers, so a long gap means we were away even if no switch was signalled
+    if(!document.hidden && st.loc && st.live && curScreen() === 'main' && !app.drag && now - app.lastTouch > 4000) renderApp();   // the minute-by-minute refresh waits while you are touching the screen
+  }, 30000);
   document.addEventListener('visibilitychange', () => {
     if(document.hidden){ app.hiddenAt = Date.now(); return; }
     if(st.loc && st.live && curScreen() === 'main') renderApp();
@@ -1989,6 +2014,6 @@ function init(){
 
 init();
 </script>
-<div class="pagever" role="contentinfo" title="Page version 6">v6</div>
+<div class="pagever" role="contentinfo" title="Page version 1.7">v1.7</div>
 </body>
 </html>
